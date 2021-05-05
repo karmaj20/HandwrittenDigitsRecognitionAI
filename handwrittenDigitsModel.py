@@ -33,9 +33,12 @@ class NeuralNetwork:
         model.add(tf.keras.layers.Dense(units=128, activation=tf.nn.relu))
         model.add(tf.keras.layers.Dense(units=128, activation=tf.nn.relu))
         model.add(tf.keras.layers.Dense(units=10, activation=tf.nn.softmax))
+
+        tb_callback = tf.keras.callbacks.TensorBoard(log_dir='logs/Dense', histogram_freq=1)
+
         model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-        return model
+        return model, tb_callback
 
     def createConvolutionalModel(self):
         input_shape = (self.img_height, self.img_width, 1)
@@ -49,23 +52,25 @@ class NeuralNetwork:
         model.add(Dropout(0.5))
         model.add(Dense(10, activation=tf.nn.softmax))
 
+        tb_callback = tf.keras.callbacks.TensorBoard(log_dir='logs/Conv', histogram_freq=1)
+
         model.compile(optimizer='adam',
                       loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
 
-        return model
+        return model, tb_callback
 
     def trainModel(self, choice):
         if choice == 'C':
-            model = self.createConvolutionalModel()
-            model.fit(self.X_train, self.y_train, batch_size=128, epochs=10, verbose=1, validation_data=(self.X_test, self.y_test))
+            model, tb_callback = self.createConvolutionalModel()
+            model.fit(self.X_train, self.y_train, batch_size=128, epochs=10, verbose=1, validation_data=(self.X_test, self.y_test), callbacks=[tb_callback])
         elif choice == 'D':
-            model = self.createDenseModel()
-            model.fit(self.X_train, self.y_train, batch_size=128, epochs=10, verbose=1, validation_data=(self.X_test, self.y_test))
+            model, tb_callback = self.createDenseModel()
+            model.fit(self.X_train, self.y_train, batch_size=128, epochs=10, verbose=1, validation_data=(self.X_test, self.y_test), callbacks=[tb_callback])
         else:
-            model = self.createDenseModel()
+            model, tb_callback = self.createDenseModel()
             model.fit(self.X_train, self.y_train, batch_size=128, epochs=10, verbose=1,
-                      validation_data=(self.X_test, self.y_test))
+                      validation_data=(self.X_test, self.y_test), callbacks=[tb_callback])
 
         return model
 
