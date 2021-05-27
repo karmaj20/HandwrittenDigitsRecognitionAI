@@ -4,6 +4,7 @@ from tensorflow.keras import layers, models
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 import matplotlib.pyplot as plt
+# use tensorboard command : tensorboard --logdir logs/
 
 class NeuralNetwork:
     X_train, y_train, X_test, y_test = (None, None, None, None)

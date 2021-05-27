@@ -1,7 +1,7 @@
 import tkinter as tk
-import cv2
-from PIL import ImageTk, Image, ImageDraw
-from handwrittenDigitsModel import *
+from PIL import Image, ImageDraw
+from NeuralNetworkFromScratch import *
+
 
 class Window:
     count = 0
@@ -12,10 +12,9 @@ class Window:
     win = None
     model = None
 
-    def __init__(self, choice):
-        self.choice = choice
+    def __init__(self):
         win = tk.Tk()
-        self.model = self.loadNeuralNetwork()
+        self.scratchModel = self.loadNeuralNetwork()
         self.canvas = tk.Canvas(self.win, width=500, height=500, bg='white')
         self.canvas.grid(row=0, column=0, columnspan=4)
 
@@ -76,14 +75,14 @@ class Window:
 
         img_array = img_array.astype('float32')
         img_array = img_array / 255.0
-        img_array = img_array.reshape(1,28,28,1)
+        img_array = img_array.reshape(784,)
 
-        nn = self.model.predictModel(img_array)
+        nn = self.scratchModel.predictModel(img_array)
         label = np.argmax(nn, axis=1)
 
         self.label_status.config(text='PREDICTED DIGIT: ' + str(label))
 
     def loadNeuralNetwork(self):
-        model = NeuralNetwork(self.choice)
+        scratchModel = NeuralNetworkFromScratch()
 
-        return model
+        return scratchModel
